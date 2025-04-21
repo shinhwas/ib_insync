@@ -1820,12 +1820,8 @@ class IB:
                     self._logger.error(msg)
 
             # the request for executions must come after all orders are in
-            try:
-                await asyncio.wait_for(self.reqExecutionsAsync(), timeout)
-            except asyncio.TimeoutError:
-                msg = 'executions request timed out'
-                errors.append(msg)
-                self._logger.error(msg)
+            reqId = self.client.getReqId()
+            self.client.reqExecutions(reqId, ExecutionFilter())
 
             if raiseSyncErrors and len(errors) > 0:
                 raise ConnectionError(errors)
